@@ -1,3 +1,5 @@
+import './List.css';
+
 interface Props {
     title: string;
     items: any[]; // or a more specific type
@@ -6,9 +8,9 @@ interface Props {
 
 export default function List({ title, items, renderItem }: Props) {
   return (
-    <div>
+    <div className="list">
       <h1>{title}</h1>
-      <ul>
+      <ul className="list-grid">
         {items.map((item, index) => renderItem(item, index))}
       </ul>
     </div>
@@ -16,5 +18,5 @@ export default function List({ title, items, renderItem }: Props) {
 }
 
 List.Item = function ListItem({ children }) {
-  return <li>{children}</li>;
+  return <li className="list-item">{children}</li>;
 };
