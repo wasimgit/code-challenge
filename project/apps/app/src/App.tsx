@@ -1,21 +1,28 @@
-import { useState, useEffect } from 'react';
-import PokemonList from './components/ui/PokemonList';
+import { useEffect } from "react";
+import { List } from "ui";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { selectPokemonState, fetchPokemon } from "./pokemon/slice";
 
-export default function PokemonListContainer() {
-  const [pokemonList, setPokemonList] = useState([]);
+const App = () => {
+  const dispatch = useAppDispatch();
+  const { loading, error, data } = useAppSelector(selectPokemonState);
 
   useEffect(() => {
-    const fetchPokemonList = async () => {
-      const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
-      const data = await response.json();
-      setPokemonList(data.results);
-    };
-    fetchPokemonList();
+    dispatch(fetchPokemon());
   }, []);
 
   return (
-    <div>
-      <PokemonList pokemonList={pokemonList} />
-    </div>
+    <>
+      <h1>Pokemon list:</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <List data={data} />
+      )}
+    </>
   );
-}
+};
+
+export default App;
