@@ -1,28 +1,34 @@
-import { useEffect } from "react";
-import { List } from "ui";
-import { useAppDispatch, useAppSelector } from "./hooks";
-import { selectPokemonState, fetchPokemon } from "./pokemon/slice";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchPokemonsSuccess, removePokemon } from './pokemonReducer';
 
-const App = () => {
-  const dispatch = useAppDispatch();
-  const { loading, error, data } = useAppSelector(selectPokemonState);
+function App() {
+  const pokemons = useSelector((state) => state.pokemon.list);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchPokemon());
+  React.useEffect(() => {
+    const fetchPokemons = async () => {
+      const data = await fetchPokemons();
+      dispatch(fetchPokemonsSuccess(data));
+    };
+    fetchPokemons();
   }, []);
 
   return (
-    <>
-      <h1>Pokemon list:</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <List data={data} />
-      )}
-    </>
+    <div>
+      <h1>Pokémon List</h1>
+      <ul>
+        {pokemons.map((pokemon) => (
+          <li key={pokemon.name}>
+            {pokemon.name}
+            <button onClick={() => dispatch(removePokemon(pokemon.name))}>
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-};
+}
 
 export default App;
